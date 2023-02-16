@@ -1,22 +1,29 @@
 import api.model.OrderModel;
+import api.steps.OrderSteps;
 import io.qameta.allure.junit4.DisplayName;
 import io.restassured.response.ValidatableResponse;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
-import steps.OrderSteps;
-import steps.UtilitySteps;
 
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 
 @DisplayName("Создание заказа")
 @RunWith(Parameterized.class)
 public class OrderColorTest {
     private final String[] color;
-    OrderSteps orderSteps = new OrderSteps();
-    OrderModel orderModel = orderSteps.orderTemplate();
-    UtilitySteps utilitySteps = new UtilitySteps();
-
+    private final OrderSteps orderSteps = new OrderSteps();
+    private final OrderModel orderModel = new OrderModel(
+            "firstName",
+            "lastName",
+            "address",
+            "metroStation",
+            "phone",
+            5,
+            "2020-06-06",
+            "comment",
+            new String[]{"BLACK"});
 
     public OrderColorTest(String[] color) {
         this.color = color;
@@ -32,7 +39,7 @@ public class OrderColorTest {
     public void createTwoIdenticalCouriersTest() {
         orderModel.setColor(color);
         ValidatableResponse validatableResponse = orderSteps.newOrder(orderModel);
-        utilitySteps.testStatusCode(validatableResponse, 201);
+        assertEquals("Статус код отличается от ожидаймого", validatableResponse.extract().statusCode(), 201);
         assertFalse("Track заказа отсутствует", orderSteps.getTrackOrder(validatableResponse).isEmpty());
     }
 }

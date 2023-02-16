@@ -1,24 +1,20 @@
 import api.model.СourierModel;
+import api.steps.CourierSteps;
+import io.qameta.allure.Allure;
 import io.qameta.allure.junit4.DisplayName;
 import io.restassured.response.ValidatableResponse;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
-import steps.CourierSteps;
-import steps.UtilitySteps;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 
 @DisplayName("Логин курьера")
 public class CourierLoginTest {
-    /*
-если авторизоваться под несуществующим пользователем, запрос возвращает ошибку;
-успешный запрос возвращает id.
-    */ UtilitySteps utilitySteps = new UtilitySteps();
-    CourierSteps courierSteps = new CourierSteps();
-    ValidatableResponse validatableResponse;
-    СourierModel randomCourier;
+    private final CourierSteps courierSteps = new CourierSteps();
+    private ValidatableResponse validatableResponse;
+    private СourierModel randomCourier;
 
     @Before
     public void setUp() {
@@ -28,13 +24,14 @@ public class CourierLoginTest {
 
     @After
     public void tearDown() {
-        utilitySteps.testStatusCode(courierSteps.deleteCourier(courierSteps.getIdCourier(randomCourier)), 200);
+        courierSteps.deleteCourier(courierSteps.getIdCourier(randomCourier));
     }
 
     @Test
     @DisplayName("Kурьер может авторизоваться")
     public void createСourierTest() {
-        utilitySteps.testStatusCode(courierSteps.courierLoginInSystem(randomCourier), 200);
+        Allure.step("Проверка, курьер создан");
+        assertEquals("Статус код отличается от ожидаймого", courierSteps.courierLoginInSystem(randomCourier).extract().statusCode(), 200);
     }
 
     @Test
@@ -42,7 +39,8 @@ public class CourierLoginTest {
     public void errorWithIncorrectLoginTest() {
         String login = randomCourier.getPassword();
         randomCourier.setPassword("errorLogin");
-        utilitySteps.testStatusCode(courierSteps.courierLoginInSystem(randomCourier), 404);
+        Allure.step("Проверка кода ответа при неправильном логине");
+        assertEquals("Статус код отличается от ожидаймого", courierSteps.courierLoginInSystem(randomCourier).extract().statusCode(), 404);
         randomCourier.setPassword(login);
     }
 
@@ -51,7 +49,8 @@ public class CourierLoginTest {
     public void errorWithIncorrectPasswordTest() {
         String password = randomCourier.getPassword();
         randomCourier.setPassword("errorPassword");
-        utilitySteps.testStatusCode(courierSteps.courierLoginInSystem(randomCourier), 404);
+        Allure.step("Проверка кода ответа при неправильном пароле");
+        assertEquals("Статус код отличается от ожидаймого", courierSteps.courierLoginInSystem(randomCourier).extract().statusCode(), 404);
         randomCourier.setPassword(password);
     }
 
@@ -60,7 +59,8 @@ public class CourierLoginTest {
     public void NoPasswordTest() {
         String password = randomCourier.getPassword();
         randomCourier.setPassword(null);
-        utilitySteps.testStatusCode(courierSteps.courierLoginInSystem(randomCourier), 400);
+        Allure.step("Проверка кода ответа при отсутствии пароля");
+        assertEquals("Статус код отличается от ожидаймого", courierSteps.courierLoginInSystem(randomCourier).extract().statusCode(), 400);
         randomCourier.setPassword(password);
     }
 
@@ -69,7 +69,8 @@ public class CourierLoginTest {
     public void NoLoginTest() {
         String login = randomCourier.getLogin();
         randomCourier.setLogin(null);
-        utilitySteps.testStatusCode(courierSteps.courierLoginInSystem(randomCourier), 400);
+        Allure.step("Проверка кода ответа при отсутствии логина");
+        assertEquals("Статус код отличается от ожидаймого", courierSteps.courierLoginInSystem(randomCourier).extract().statusCode(), 400);
         randomCourier.setLogin(login);
     }
 
@@ -78,14 +79,15 @@ public class CourierLoginTest {
     public void defunctUserTest() {
         String login = randomCourier.getLogin();
         randomCourier.setLogin(null);
-        utilitySteps.testStatusCode(courierSteps.courierLoginInSystem(randomCourier), 400);
+        Allure.step("Проверка кода ответа при несуществующем логине");
+        assertEquals("Статус код отличается от ожидаймого", courierSteps.courierLoginInSystem(randomCourier).extract().statusCode(), 400);
         randomCourier.setLogin(login);
     }
 
     @Test
     @DisplayName("Успешный запрос возвращает id")
     public void successfulRequestReturnsIdTest() {
+        Allure.step("Проверка наличия ID в ответе сервера");
         assertFalse("ID курьера отсутствует", courierSteps.getIdCourier(randomCourier).isEmpty());
     }
-
 }

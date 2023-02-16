@@ -25,6 +25,4 @@ public class Orders extends PlaceholderRestClient {
                 .get("/api/v1/orders")
                 .then();
     }
-
-
 }

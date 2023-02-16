@@ -18,7 +18,6 @@ public class Сourier extends PlaceholderRestClient {
                 .then();
     }
         public ValidatableResponse postCourierLoginInSystem(СourierModel json){
-            //  File json = new File("src/test/resources/test.json");
             return given()
                     .spec(baseSpec())
                     .header("Content-type", "application/json")
@@ -37,7 +36,4 @@ public class Сourier extends PlaceholderRestClient {
                 .delete("/api/v1/courier/"+id)
                 .then();
     }
-
-
-
 }

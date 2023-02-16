@@ -1,4 +1,4 @@
-package steps;
+package api.steps;
 
 import api.model.СourierModel;
 import api.Сourier;
@@ -10,8 +10,6 @@ import java.util.Random;
 public class CourierSteps {
     private final Сourier сourier = new Сourier();
     private final СourierModel courierModel = new СourierModel();
-
-    UtilitySteps utilitySteps = new UtilitySteps();
 
     @Step("API создания нового курьера")
     public ValidatableResponse newCourier(СourierModel courier) {
@@ -38,7 +36,6 @@ public class CourierSteps {
     @Step("ID Курьера")
     public String getIdCourier(СourierModel courier) {
         var validatableResponse = courierLoginInSystem(courier);
-        utilitySteps.testStatusCode(validatableResponse, 200);
         System.out.println("ID Курьера: " + validatableResponse.extract().jsonPath().get("id").toString());
         return validatableResponse.extract().jsonPath().get("id").toString();
     }
@@ -47,6 +44,4 @@ public class CourierSteps {
     public ValidatableResponse deleteCourier(String id) {
         return сourier.deleteCourier(id);
     }
-
-
 }
