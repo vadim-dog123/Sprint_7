@@ -37,51 +37,41 @@ public class CourierLoginTest {
     @Test
     @DisplayName("Ошибка при неправильном логине")
     public void errorWithIncorrectLoginTest() {
-        String login = randomCourier.getPassword();
-        randomCourier.setPassword("errorLogin");
+        СourierModel courierModel = new СourierModel("errorLogin",randomCourier.getPassword(),randomCourier.getFirstName());
         Allure.step("Проверка кода ответа при неправильном логине");
-        assertEquals("Статус код отличается от ожидаймого", courierSteps.courierLoginInSystem(randomCourier).extract().statusCode(), 404);
-        randomCourier.setPassword(login);
+        assertEquals("Статус код отличается от ожидаймого", courierSteps.courierLoginInSystem(courierModel).extract().statusCode(), 404);
     }
 
     @Test
     @DisplayName("Ошибка при неправильном пароле")
     public void errorWithIncorrectPasswordTest() {
-        String password = randomCourier.getPassword();
-        randomCourier.setPassword("errorPassword");
+        СourierModel courierModel = new СourierModel(randomCourier.getLogin(),"errorPas",randomCourier.getFirstName());
         Allure.step("Проверка кода ответа при неправильном пароле");
-        assertEquals("Статус код отличается от ожидаймого", courierSteps.courierLoginInSystem(randomCourier).extract().statusCode(), 404);
-        randomCourier.setPassword(password);
+        assertEquals("Статус код отличается от ожидаймого", courierSteps.courierLoginInSystem(courierModel).extract().statusCode(), 404);
     }
 
     @Test
     @DisplayName("Если нет пароля, запрос возвращает ошибку")
     public void NoPasswordTest() {
-        String password = randomCourier.getPassword();
-        randomCourier.setPassword(null);
+        СourierModel courierModel = new СourierModel(randomCourier.getLogin(),null,randomCourier.getFirstName());
         Allure.step("Проверка кода ответа при отсутствии пароля");
-        assertEquals("Статус код отличается от ожидаймого", courierSteps.courierLoginInSystem(randomCourier).extract().statusCode(), 400);
-        randomCourier.setPassword(password);
+        assertEquals("Статус код отличается от ожидаймого", courierSteps.courierLoginInSystem(courierModel).extract().statusCode(), 400);
     }
 
     @Test
     @DisplayName("Если нет логина, запрос возвращает ошибку")
     public void NoLoginTest() {
-        String login = randomCourier.getLogin();
-        randomCourier.setLogin(null);
+        СourierModel courierModel = new СourierModel(null,randomCourier.getPassword(),randomCourier.getFirstName());
         Allure.step("Проверка кода ответа при отсутствии логина");
-        assertEquals("Статус код отличается от ожидаймого", courierSteps.courierLoginInSystem(randomCourier).extract().statusCode(), 400);
-        randomCourier.setLogin(login);
+        assertEquals("Статус код отличается от ожидаймого", courierSteps.courierLoginInSystem(courierModel).extract().statusCode(), 400);
     }
 
     @Test
     @DisplayName("Если авторизоваться под несуществующим пользователем, запрос возвращает ошибку")
     public void defunctUserTest() {
-        String login = randomCourier.getLogin();
-        randomCourier.setLogin(null);
+        СourierModel courierModel = new СourierModel("Log",randomCourier.getPassword(),randomCourier.getFirstName());
         Allure.step("Проверка кода ответа при несуществующем логине");
-        assertEquals("Статус код отличается от ожидаймого", courierSteps.courierLoginInSystem(randomCourier).extract().statusCode(), 400);
-        randomCourier.setLogin(login);
+        assertEquals("Статус код отличается от ожидаймого", courierSteps.courierLoginInSystem(courierModel).extract().statusCode(), 400);
     }
 
     @Test
